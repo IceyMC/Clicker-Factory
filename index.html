@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Clicker Factory</title>
+
+<style>
+
+/* =========================
+   GLOBAL
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
+    color: white;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #293b59 0%,
+            #111827 45%,
+            #070b12 100%
+        );
+
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 35px;
+
+    background: rgba(12, 18, 30, .85);
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
+
+    backdrop-filter: blur(15px);
+
+    position: sticky;
+    top: 0;
+
+    z-index: 20;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.logoIcon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffb347,
+            #ff6b35
+        );
+
+    box-shadow:
+        0 8px 25px rgba(255,120,40,.25);
+}
+
+.levelBadge {
+    padding: 12px 18px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
+    color: #cbd5e1;
+
+    font-weight: 700;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+.main {
+    max-width: 1450px;
+
+    margin: auto;
+
+    padding: 35px 25px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        390px;
+
+    gap: 25px;
+}
+
+
+/* =========================
+   GAME PANEL
+========================= */
+
+.gamePanel {
+    position: relative;
+
+    min-height: 680px;
+
+    padding: 35px;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.075),
+            rgba(255,255,255,.025)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.35);
+
+    overflow: hidden;
+}
+
+.gamePanel::before {
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    background: #ff8a00;
+
+    opacity: .06;
+
+    filter: blur(100px);
+
+    border-radius: 50%;
+
+    top: -250px;
+    left: -200px;
+}
+
+.title {
+    position: relative;
+
+    font-size: 36px;
+
+    font-weight: 900;
+
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    position: relative;
+
+    color: #94a3b8;
+
+    margin-bottom: 30px;
+}
+
+
+/* =========================
+   STATS
+========================= */
+
+.stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+}
+
+.stat {
+    padding: 18px;
+
+    border-radius: 18px;
+
+    background:
+        rgba(0,0,0,.22);
+
+    border:
+        1px solid rgba(255,255,255,.07);
+}
+
+.statLabel {
+    color: #94a3b8;
+
+    font-size: 13px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+.statValue {
+    font-size: 26px;
+
+    font-weight: 900;
+
+    margin-top: 5px;
+}
+
+
+/* =========================
+   CLICK OBJECT
+========================= */
+
+.objectArea {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    min-height: 350px;
+}
+
+.clickObject {
+    width: 270px;
+    height: 270px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 110px;
+
+    cursor: pointer;
+
+    border-radius: 35px;
+
+    user-select: none;
+
+    position: relative;
+
+    transition:
+        transform .12s,
+        filter .2s;
+
+    box-shadow:
+        0 25px 50px rgba(0,0,0,.4);
+}
+
+.clickObject:hover {
+    transform: translateY(-8px) scale(1.03);
+
+    filter: brightness(1.1);
+}
+
+.clickObject:active {
+    transform:
+        translateY(5px)
+        scale(.92);
+}
+
+
+/* BOX */
+
+.boxObject {
+    background:
+        linear-gradient(
+            145deg,
+            #d99143,
+            #8c491e
+        );
+
+    border:
+        10px solid #572b12;
+
+    box-shadow:
+        inset 0 10px 0 rgba(255,255,255,.12),
+        0 25px 50px rgba(0,0,0,.45);
+}
+
+
+/* STORAGE */
+
+.storageObject {
+    background:
+        linear-gradient(
+            145deg,
+            #65758b,
+            #252d39
+        );
+
+    border:
+        10px solid #151a22;
+}
+
+
+/* DRAWER */
+
+.drawerObject {
+    background:
+        linear-gradient(
+            145deg,
+            #a66b3d,
+            #4b2918
+        );
+
+    border:
+        10px solid #2a150b;
+}
+
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progressArea {
+    margin-top: 5px;
+}
+
+.progressTop {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 9px;
+
+    color: #cbd5e1;
+
+    font-size: 14px;
+}
+
+.progressBar {
+    height: 18px;
+
+    background: #080d15;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+}
+
+.progressFill {
+    width: 0%;
+
+    height: 100%;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffb347,
+            #ff7043
+        );
+
+    box-shadow:
+        0 0 20px rgba(255,130,50,.5);
+
+    transition:
+        width .25s ease;
+}
+
+
+/* =========================
+   SHOP
+========================= */
+
+.shop {
+    padding: 25px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(14,20,32,.88);
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.4);
+
+    height: fit-content;
+}
+
+.shopTitle {
+    font-size: 27px;
+
+    font-weight: 900;
+
+    margin-bottom: 5px;
+}
+
+.shopSubtitle {
+    color: #64748b;
+
+    font-size: 14px;
+
+    margin-bottom: 25px;
+}
+
+
+/* =========================
+   SHOP ITEM
+========================= */
+
+.upgrade {
+    padding: 18px;
+
+    margin-bottom: 13px;
+
+    border-radius: 19px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.06),
+            rgba(255,255,255,.025)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    transition:
+        transform .2s,
+        border .2s,
+        background .2s;
+}
+
+.upgrade:hover {
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(255,179,71,.35);
+
+    background:
+        rgba(255,255,255,.08);
+}
+
+.upgradeHeader {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 8px;
+}
+
+.upgradeName {
+    font-weight: 800;
+
+    font-size: 17px;
+}
+
+.upgradeLevel {
+    font-size: 12px;
+
+    color: #64748b;
+}
+
+.upgradeDescription {
+    color: #94a3b8;
+
+    font-size: 13px;
+
+    line-height: 1.4;
+
+    margin-bottom: 14px;
+}
+
+.upgradeButton {
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    color: white;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff9f43,
+            #ff6b35
+        );
+
+    transition:
+        transform .15s,
+        filter .15s;
+}
+
+.upgradeButton:hover {
+    filter: brightness(1.12);
+
+    transform: translateY(-2px);
+}
+
+.upgradeButton:active {
+    transform: scale(.97);
+}
+
+.upgradeButton:disabled {
+    background: #252c38;
+
+    color: #64748b;
+
+    cursor: not-allowed;
+
+    filter: none;
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+    min-height: 30px;
+
+    text-align: center;
+
+    margin-top: 15px;
+
+    color: #ffd166;
+
+    font-weight: 800;
+
+    font-size: 16px;
+}
+
+
+/* =========================
+   FLOATING COINS
+========================= */
+
+.floatingCoin {
+    position: fixed;
+
+    pointer-events: none;
+
+    font-size: 22px;
+
+    font-weight: 900;
+
+    color: #ffd166;
+
+    animation:
+        floatUp .8s ease-out forwards;
+
+    z-index: 100;
+}
+
+@keyframes floatUp {
+
+    0% {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translateY(-90px)
+            scale(1.3);
+    }
+}
+
+
+/* =========================
+   LEVEL COMPLETE
+========================= */
+
+.levelFlash {
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(0,0,0,.75);
+
+    backdrop-filter: blur(10px);
+
+    z-index: 200;
+}
+
+.levelCard {
+    width: min(500px, 90%);
+
+    padding: 40px;
+
+    text-align: center;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #202b3d,
+            #111827
+        );
+
+    border:
+        1px solid rgba(255,255,255,.15);
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.6);
+
+    animation:
+        popIn .35s ease;
+}
+
+.levelCard h2 {
+    font-size: 35px;
+
+    margin: 10px;
+}
+
+.levelCard p {
+    color: #94a3b8;
+
+    margin-bottom: 25px;
+}
+
+.continueButton {
+    width: 100%;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffb347,
+            #ff6b35
+        );
+
+    color: white;
+
+    font-weight: 900;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+@keyframes popIn {
+
+    from {
+        transform: scale(.7);
+
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+
+        opacity: 1;
+    }
+}
+
+
+/* =========================
+   RESET
+========================= */
+
+.resetButton {
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 12px;
+
+    border: 1px solid #ef4444;
+
+    border-radius: 12px;
+
+    background:
+        rgba(239,68,68,.08);
+
+    color: #f87171;
+
+    cursor: pointer;
+
+    font-weight: 700;
+}
+
+.resetButton:hover {
+    background:
+        rgba(239,68,68,.16);
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 950px) {
+
+    .main {
+        grid-template-columns: 1fr;
+    }
+
+    .shop {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 0 15px;
+    }
+
+    .logo {
+        font-size: 19px;
+    }
+
+    .levelBadge {
+        font-size: 12px;
+        padding: 9px;
+    }
+
+    .gamePanel {
+        padding: 20px;
+    }
+
+    .title {
+        font-size: 28px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .clickObject {
+        width: 220px;
+        height: 220px;
+        font-size: 85px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <div class="logo">
+
+        <div class="logoIcon">
+            🏭
+        </div>
+
+        CLICKER FACTORY
+
+    </div>
+
+    <div
+        class="levelBadge"
+        id="level"
+    >
+        Level 1: 📦 Box Warehouse
+    </div>
+
+</header>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<div class="main">
+
+
+    <!-- GAME -->
+
+    <section class="gamePanel">
+
+        <div class="title">
+            <span id="objectTitle">
+                Box Clicker
+            </span>
+        </div>
+
+        <div class="subtitle">
+            Click the object and build your factory!
+        </div>
+
+
+        <!-- STATS -->
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <div class="statLabel">
+                    Coins
+                </div>
+
+                <div
+                    class="statValue"
+                    id="coins"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="statLabel">
+                    Per Click
+                </div>
+
+                <div
+                    class="statValue"
+                    id="clickPower"
+                >
+                    1
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="statLabel">
+                    Per Second
+                </div>
+
+                <div
+                    class="statValue"
+                    id="autoPower"
+                >
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CLICK OBJECT -->
+
+        <div class="objectArea">
+
+            <div
+                id="clickObject"
+                class="clickObject boxObject"
+            >
+                📦
+            </div>
+
+        </div>
+
+
+        <!-- PROGRESS -->
+
+        <div class="progressArea">
+
+            <div class="progressTop">
+
+                <span>
+                    Level Progress
+                </span>
+
+                <span>
+
+                    <span id="current">
+                        0
+                    </span>
+
+                    /
+
+                    <span id="goal">
+                        1000
+                    </span>
+
+                </span>
+
+            </div>
+
+            <div class="progressBar">
+
+                <div
+                    id="progress"
+                    class="progressFill"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="message"
+            id="message"
+        ></div>
+
+    </section>
+
+
+
+    <!-- SHOP -->
+
+    <aside class="shop">
+
+        <div class="shopTitle">
+            🛒 Upgrade Shop
+        </div>
+
+        <div class="shopSubtitle">
+            Make your factory faster.
+        </div>
+
+
+        <!-- CLICK POWER -->
+
+        <div class="upgrade">
+
+            <div class="upgradeHeader">
+
+                <div class="upgradeName">
+                    ⚡ Stronger Clicks
+                </div>
+
+                <div
+                    class="upgradeLevel"
+                    id="clickLevel"
+                >
+                    Level 1
+                </div>
+
+            </div>
+
+            <div class="upgradeDescription">
+
+                Increase the amount of coins
+                you earn every time you click.
+
+            </div>
+
+            <button
+                class="upgradeButton"
+                id="clickUpgrade"
+            >
+
+                Upgrade •
+                <span id="clickCost">
+                    25
+                </span>
+                💰
+
+            </button>
+
+        </div>
+
+
+
+        <!-- AUTO CLICKER -->
+
+        <div class="upgrade">
+
+            <div class="upgradeHeader">
+
+                <div class="upgradeName">
+                    🤖 Auto Machine
+                </div>
+
+                <div
+                    class="upgradeLevel"
+                    id="autoLevel"
+                >
+                    Level 0
+                </div>
+
+            </div>
+
+            <div class="upgradeDescription">
+
+                Automatically clicks your
+                object every second.
+
+            </div>
+
+            <button
+                class="upgradeButton"
+                id="autoUpgrade"
+            >
+
+                Buy Machine •
+                <span id="autoCost">
+                    100
+                </span>
+                💰
+
+            </button>
+
+        </div>
+
+
+
+        <!-- MULTIPLIER -->
+
+        <div class="upgrade">
+
+            <div class="upgradeHeader">
+
+                <div class="upgradeName">
+                    🔥 Coin Multiplier
+                </div>
+
+                <div
+                    class="upgradeLevel"
+                    id="multiLevel"
+                >
+                    x1
+                </div>
+
+            </div>
+
+            <div class="upgradeDescription">
+
+                Multiply all coins earned from
+                clicking and machines.
+
+            </div>
+
+            <button
+                class="upgradeButton"
+                id="multiplierUpgrade"
+            >
+
+                Upgrade •
+                <span id="multiCost">
+                    500
+                </span>
+                💰
+
+            </button>
+
+        </div>
+
+
+        <button
+            class="resetButton"
+            id="reset"
+        >
+            Reset Game
+        </button>
+
+    </aside>
+
+</div>
+
+
+
+<!-- =========================
+     LEVEL POPUP
+========================= -->
+
+<div
+    class="levelFlash"
+    id="levelFlash"
+>
+
+    <div class="levelCard">
+
+        <div
+            style="font-size:70px"
+            id="levelEmoji"
+        >
+            🎉
+        </div>
+
+        <h2 id="levelTitle">
+            Level Complete!
+        </h2>
+
+        <p id="levelDescription">
+            You unlocked a new area!
+        </p>
+
+        <button
+            class="continueButton"
+            id="continueButton"
+        >
+            Continue →
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+/* =========================
+   GAME DATA
+========================= */
+
+let game = {
+
+    level: 1,
+
+    coins: 0,
+
+    clickPower: 1,
+
+    autoPower: 0,
+
+    multiplier: 1,
+
+    progress: 0,
+
+    clickCost: 25,
+
+    autoCost: 100,
+
+    multiCost: 500,
+
+    goal: 1000
+
+};
+
+
+/* =========================
+   LOAD
+========================= */
+
+const saved =
+    localStorage.getItem("clickerFactory");
+
+if (saved) {
+
+    game = JSON.parse(saved);
+
+}
+
+
+/* =========================
+   SAVE
+========================= */
+
+function saveGame() {
+
+    localStorage.setItem(
+        "clickerFactory",
+        JSON.stringify(game)
+    );
+
+}
+
+
+/* =========================
+   LEVEL INFO
+========================= */
+
+const levels = {
+
+    1: {
+        name: "Box Clicker",
+        emoji: "📦",
+        area: "Level 1: 📦 Box Warehouse",
+        goal: 1000,
+        multiplier: 1,
+        className: "boxObject"
+    },
+
+    2: {
+        name: "Storage Clicker",
+        emoji: "🏭",
+        area: "Level 2: 🏭 Storage Clicker",
+        goal: 5000,
+        multiplier: 2,
+        className: "storageObject"
+    },
+
+    3: {
+        name: "Drawer Clicker",
+        emoji: "🗄️",
+        area: "Level 3: 🗄️ Drawer Clicker",
+        goal: 15000,
+        multiplier: 3,
+        className: "drawerObject"
+    }
+
+};
+
+
+/* =========================
+   SCREEN
+========================= */
+
+function updateScreen() {
+
+    const info =
+        levels[game.level];
+
+
+    document.getElementById("coins")
+        .textContent =
+        Math.floor(game.coins);
+
+
+    document.getElementById("clickPower")
+        .textContent =
+        game.clickPower *
+        game.multiplier;
+
+
+    document.getElementById("autoPower")
+        .textContent =
+        game.autoPower *
+        game.multiplier *
+        info.multiplier;
+
+
+    document.getElementById("current")
+        .textContent =
+        Math.floor(game.progress);
+
+
+    document.getElementById("goal")
+        .textContent =
+        game.goal;
+
+
+    document.getElementById("clickCost")
+        .textContent =
+        game.clickCost;
+
+
+    document.getElementById("autoCost")
+        .textContent =
+        game.autoCost;
+
+
+    document.getElementById("multiCost")
+        .textContent =
+        game.multiCost;
+
+
+    document.getElementById("clickLevel")
+        .textContent =
+        "Level " + game.clickPower;
+
+
+    document.getElementById("autoLevel")
+        .textContent =
+        "Level " + game.autoPower;
+
+
+    document.getElementById("multiLevel")
+        .textContent =
+        "x" + game.multiplier;
+
+
+    document.getElementById("level")
+        .textContent =
+        info.area;
+
+
+    document.getElementById("objectTitle")
+        .textContent =
+        info.name;
+
+
+    const object =
+        document.getElementById("clickObject");
+
+
+    object.textContent =
+        info.emoji;
+
+
+    object.className =
+        "clickObject " +
+        info.className;
+
+
+    const percent =
+        Math.min(
+            game.progress /
+            game.goal *
+            100,
+            100
+        );
+
+
+    document.getElementById("progress")
+        .style.width =
+        percent + "%";
+
+
+    /* Disable buttons when broke */
+
+    document.getElementById("clickUpgrade")
+        .disabled =
+        game.coins <
+        game.clickCost;
+
+
+    document.getElementById("autoUpgrade")
+        .disabled =
+        game.coins <
+        game.autoCost;
+
+
+    document.getElementById("multiplierUpgrade")
+        .disabled =
+        game.coins <
+        game.multiCost;
+
+}
+
+
+/* =========================
+   FLOATING COIN
+========================= */
+
+function floatingCoin(x, y, amount) {
+
+    const coin =
+        document.createElement("div");
+
+    coin.className =
+        "floatingCoin";
+
+    coin.textContent =
+        "+" + amount + " 💰";
+
+    coin.style.left =
+        x + "px";
+
+    coin.style.top =
+        y + "px";
+
+    document.body.appendChild(coin);
+
+
+    setTimeout(() => {
+
+        coin.remove();
+
+    }, 800);
+
+}
+
+
+/* =========================
+   CLICK
+========================= */
+
+document
+.getElementById("clickObject")
+.addEventListener(
+    "click",
+    function(event) {
+
+        const info =
+            levels[game.level];
+
+
+        const earned =
+            game.clickPower *
+            game.multiplier *
+            info.multiplier;
+
+
+        game.coins +=
+            earned;
+
+
+        game.progress +=
+            earned;
+
+
+        floatingCoin(
+            event.clientX,
+            event.clientY,
+            earned
+        );
+
+
+        checkLevel();
+
+        updateScreen();
+
+        saveGame();
+
+    }
+);
+
+
+/* =========================
+   CLICK UPGRADE
+========================= */
+
+document
+.getElementById("clickUpgrade")
+.addEventListener(
+    "click",
+    () => {
+
+        if (
+            game.coins >=
+            game.clickCost
+        ) {
+
+            game.coins -=
+                game.clickCost;
+
+
+            game.clickPower++;
+
+
+            game.clickCost =
+                Math.floor(
+                    game.clickCost *
+                    1.5
+                );
+
+
+            updateScreen();
+
+            saveGame();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   AUTO UPGRADE
+========================= */
+
+document
+.getElementById("autoUpgrade")
+.addEventListener(
+    "click",
+    () => {
+
+        if (
+            game.coins >=
+            game.autoCost
+        ) {
+
+            game.coins -=
+                game.autoCost;
+
+
+            game.autoPower++;
+
+
+            game.autoCost =
+                Math.floor(
+                    game.autoCost *
+                    1.7
+                );
+
+
+            updateScreen();
+
+            saveGame();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   MULTIPLIER
+========================= */
+
+document
+.getElementById("multiplierUpgrade")
+.addEventListener(
+    "click",
+    () => {
+
+        if (
+            game.coins >=
+            game.multiCost
+        ) {
+
+            game.coins -=
+                game.multiCost;
+
+
+            game.multiplier++;
+
+
+            game.multiCost =
+                Math.floor(
+                    game.multiCost *
+                    3
+                );
+
+
+            updateScreen();
+
+            saveGame();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   LEVEL SYSTEM
+========================= */
+
+function checkLevel() {
+
+    if (
+        game.progress <
+        game.goal
+    ) {
+
+        return;
+
+    }
+
+
+    if (game.level === 1) {
+
+        game.level = 2;
+
+        game.progress = 0;
+
+        game.goal = 5000;
+
+
+        showLevelPopup(
+            "🏭",
+            "STORAGE CLICKER!",
+            "You've mastered the boxes! Now it's time to run the storage warehouse."
+        );
+
+    }
+
+
+    else if (game.level === 2) {
+
+        game.level = 3;
+
+        game.progress = 0;
+
+        game.goal = 15000;
+
+
+        showLevelPopup(
+            "🗄️",
+            "DRAWER CLICKER!",
+            "The storage is full! Your next challenge is the massive drawer warehouse."
+        );
+
+    }
+
+
+    else if (game.level === 3) {
+
+        game.progress =
+            game.goal;
+
+
+        showLevelPopup(
+            "🏆",
+            "YOU BEAT THE GAME!",
+            "You've conquered the Box, Storage, and Drawer factories!"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   POPUP
+========================= */
+
+function showLevelPopup(
+    emoji,
+    title,
+    description
+) {
+
+    document.getElementById(
+        "levelEmoji"
+    ).textContent =
+        emoji;
+
+
+    document.getElementById(
+        "levelTitle"
+    ).textContent =
+        title;
+
+
+    document.getElementById(
+        "levelDescription"
+    ).textContent =
+        description;
+
+
+    document.getElementById(
+        "levelFlash"
+    ).style.display =
+        "flex";
+
+}
+
+
+document
+.getElementById("continueButton")
+.addEventListener(
+    "click",
+    () => {
+
+        document.getElementById(
+            "levelFlash"
+        ).style.display =
+            "none";
+
+        updateScreen();
+
+        saveGame();
+
+    }
+);
+
+
+/* =========================
+   AUTO CLICK
+========================= */
+
+setInterval(
+    () => {
+
+        if (
+            game.autoPower <= 0
+        ) {
+
+            return;
+
+        }
+
+
+        const info =
+            levels[game.level];
+
+
+        const earned =
+            game.autoPower *
+            game.multiplier *
+            info.multiplier;
+
+
+        game.coins +=
+            earned;
+
+
+        game.progress +=
+            earned;
+
+
+        checkLevel();
+
+        updateScreen();
+
+        saveGame();
+
+    },
+    1000
+);
+
+
+/* =========================
+   RESET
+========================= */
+
+document
+.getElementById("reset")
+.addEventListener(
+    "click",
+    () => {
+
+        const yes =
+            confirm(
+                "Reset your entire Clicker Factory?"
+            );
+
+
+        if (yes) {
+
+            localStorage.removeItem(
+                "clickerFactory"
+            );
+
+            location.reload();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   START
+========================= */
+
+updateScreen();
+
+</script>
+
+</body>
+</html>
